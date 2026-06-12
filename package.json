@@ -1,0 +1,13 @@
+{
+  "name": "owl-assessment",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "backend": "cd backend && venv/bin/python -m uvicorn main:app --reload --port 8000",
+    "frontend": "npm start --prefix owl-dashboard",
+    "dev": "concurrently --kill-others --names backend,frontend \"npm run backend\" \"npm run frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.0"
+  }
+}
