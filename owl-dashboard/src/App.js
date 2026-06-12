@@ -28,13 +28,36 @@ function App() {
   const toX = (index) => padding.left + index * stepX;
   const toY = (value) => padding.top + ((yMax - value) / yMax) * (chartHeight - padding.top - padding.bottom);
 
-  const createLinePath = (values) => {
-    return values
-      .map((value, index) => `${index === 0 ? 'M' : 'L'} ${toX(index)} ${toY(value)}`)
-      .join(' ');
+  const createSmoothPath = (values) => {
+    const points = values.map((value, index) => ({
+      x: toX(index),
+      y: toY(value),
+    }));
+
+    if (points.length < 2) {
+      return '';
+    }
+
+    let path = `M ${points[0].x} ${points[0].y}`;
+
+    for (let i = 0; i < points.length - 1; i += 1) {
+      const prev = points[Math.max(0, i - 1)];
+      const current = points[i];
+      const next = points[i + 1];
+      const nextNext = points[Math.min(points.length - 1, i + 2)];
+
+      const controlX1 = current.x + (next.x - prev.x) / 6;
+      const controlY1 = current.y + (next.y - prev.y) / 6;
+      const controlX2 = next.x - (nextNext.x - current.x) / 6;
+      const controlY2 = next.y - (nextNext.y - current.y) / 6;
+
+      path += ` C ${controlX1} ${controlY1}, ${controlX2} ${controlY2}, ${next.x} ${next.y}`;
+    }
+
+    return path;
   };
 
-  const portfolioPath = createLinePath(portfolioValues);
+  const portfolioPath = createSmoothPath(portfolioValues);
   const benchmarkPath = benchmarkValues
     .map((value, index) => `${index === 0 ? 'M' : 'L'} ${toX(index)} ${toY(value)}`)
     .join(' ');
