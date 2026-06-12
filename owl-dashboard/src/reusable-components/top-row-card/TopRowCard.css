@@ -1,0 +1,53 @@
+.top-row-card {
+    width: 100%;
+    /* max-width: 280px; */
+    min-width: 0;
+    height: 175px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    border: 2px solid #e0e0e0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+}
+
+.percentage-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.percentage {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.card-value {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 10px 0 0;
+}
+
+.card-label {
+    font-size: 14px;
+    color: #7f7f7f;
+    margin: 4px 0 0;
+}

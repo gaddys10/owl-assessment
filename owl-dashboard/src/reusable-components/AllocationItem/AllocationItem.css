@@ -1,0 +1,29 @@
+.allocation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10px;
+    margin-top: 14px;
+}
+
+.allocation-item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.allocation-item-block {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.allocation-item-text {
+  font-size: 12px;
+  margin: 0;
+}
+
+.allocation-item-percent {
+  font-size: 12px;
+  font-weight: 700;
+}
