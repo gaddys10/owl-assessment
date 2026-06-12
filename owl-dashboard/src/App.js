@@ -3,22 +3,68 @@ import SidebarAlert from './reusable-components/SidebarAlert/SidebarAlert';
 import TopRowCard from './reusable-components/top-row-card/TopRowCard';
 import AllocationItem from './reusable-components/AllocationItem/AllocationItem';
 import { AlertTriangle, Bell, TrendingUp, Users, Activity, ArrowUpRight, ArrowDownRight, DollarSign } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-const allocationData = [
-  { label: 'Hedge Funds', value: 32, color: '#4625eb' },
-  { label: 'Private Equity', value: 25, color: '#628ce7' },
-  { label: 'Venture Capital', value: 18, color: '#14ac25' },
-  { label: 'Real Assets', value: 12, color: '#eb7b25' },
-  { label: 'Fixed Income', value: 8, color: '#eb2525' },
-  { label: 'Public Equity', value: 5, color: '#c04cd7' },
-];
-
-const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-const portfolioValues = [2, 3.9, 1.5, 5, 4, 6, 8, 7, 9, 11, 10, 12.3];
-const benchmarkValues = [2, 2.5, 3, 3.6, 4.2, 4.9, 5.5, 6.1, 6.7, 7.2, 7.6, 8];
+const iconMap = {
+  Activity,
+  AlertTriangle,
+  Bell,
+  TrendingUp,
+  Users,
+  ArrowUpRight,
+  ArrowDownRight,
+  DollarSign,
+};
 
 function App() {
-  const total = allocationData.reduce((sum, item) => sum + item.value, 0);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/dashboard');
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setDashboardData(data);
+      } catch (requestError) {
+        console.error('Failed to load dashboard data:', requestError);
+        setError('The dashboard data could not be loaded.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadDashboard();
+  }, []);
+
+  if (loading) {
+    return <main className="dashboard-status">Loading dashboard…</main>;
+  }
+
+  if (error) {
+    return <main className="dashboard-status">{error}</main>;
+  }
+
+  const topCards = dashboardData?.topCards ?? [];
+  const allocationData = dashboardData?.allocationData ?? [];
+  const months = dashboardData?.months ?? [];
+  const portfolioValues = dashboardData?.portfolioValues ?? [];
+  const benchmarkValues = dashboardData?.benchmarkValues ?? [];
+  const alerts = dashboardData?.alerts ?? [];
+
+  const total = allocationData.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
+
+  // const total = allocationData.reduce((sum, item) => sum + item.value, 0);
   const chartWidth = 420;
   const chartHeight = 180;
   const padding = { top: 16, right: 16, bottom: 28, left: 30 };
@@ -78,7 +124,13 @@ function App() {
             <p className="header-text">Fund Intelligence</p>
           </div>  
           <div className="right-header">
-            <button className="notification-button">
+            <button
+              type="button"
+              className="notification-button"
+              aria-label={isSidebarOpen ? 'Close alerts sidebar' : 'Open alerts sidebar'}
+              aria-expanded={isSidebarOpen}
+              onClick={() => setIsSidebarOpen((prev) => !prev)}
+            >
               <Bell size={20} color="#7f7f7f" />
               <span className="notification-dot"></span>
             </button>
@@ -92,38 +144,22 @@ function App() {
 
           <div className="main-content">
             <div className="top-row">
-              <TopRowCard
-                icon={Activity}
-                value="142"
-                label="Funds Monitored"
-                percentage="8.2%"
-                percentageColor="#22c55e"
-                trendIcon={ArrowUpRight}
-              />
-              <TopRowCard
-                icon={DollarSign}
-                value="$15.0B"
-                label="Total AUM Tracked"
-                percentage="12.5%"
-                percentageColor="#22c55e"
-                trendIcon={ArrowUpRight}
-              />
-              <TopRowCard
-                icon={TrendingUp}
-                value="+12.5%"
-                label="Average YTD Return"
-                percentage="8.2%"
-                percentageColor="#22c55e"
-                trendIcon={ArrowUpRight}
-              />
-              <TopRowCard
-                icon={AlertTriangle}
-                value="24"
-                label="Active Alerts"
-                percentage="-15%"
-                percentageColor="#c52222"
-                trendIcon={ArrowDownRight}
-              />
+              {topCards.map((card) => {
+                const Icon = iconMap[card.icon];
+                const TrendIcon = iconMap[card.trendIcon];
+
+                return (
+                  <TopRowCard
+                    key={card.label}
+                    icon={Icon}
+                    value={card.value}
+                    label={card.label}
+                    percentage={card.percentage}
+                    percentageColor={card.percentageColor}
+                    trendIcon={TrendIcon}
+                  />
+                );
+              })}
             </div>
             <div className="bottom-row">
               <div className="performance-card">
@@ -204,7 +240,7 @@ function App() {
             </div>
           </div>
 
-          <div className="sidebar">
+          <div className={`sidebar ${isSidebarOpen ? 'open' : 'collapsed'}`}>
             <div className="sidebar-title-box">
               <p className="sidebar-title">Alerts</p>
               <button type="button" className="sidebar-title-link">
@@ -212,41 +248,19 @@ function App() {
               </button>
             </div>
             <div className="sidebar-alert-container">
-              <SidebarAlert
-                icon={TrendingUp}
-                iconColor="#616161"
-                title="Tiger Global +25% YTD"
-                description="Outperforming benchmark by 17.3pp"
-                time="2h ago"
-              />
-              <SidebarAlert
-                icon={AlertTriangle}
-                iconColor="#f59e0b"
-                title="Bridgewater drawdown alert"
-                description="Pure alpha fund down -3.1% YTD"
-                time="5h ago"
-              />
-              <SidebarAlert
-                icon={Users}
-                iconColor="#3b82f6"
-                title="PM departure at Citizel"
-                description="Senior PM Alex Chen leaving"
-                time="6h ago"
-              />
-              <SidebarAlert
-                icon={Activity}
-                iconColor="#616161"
-                title="Baupost ADV amendment"
-                description="Updated Form ADV filed with SEC"
-                time="1d ago"
-              />
-              <SidebarAlert
-                icon={TrendingUp}
-                iconColor="#616161"
-                title="Renaissance +32.1%"
-                description="Top performer in universe"
-                time="1d ago"
-              />
+              {alerts.map((alert) => {
+                const Icon = iconMap[alert.icon];
+
+                return (
+                  <SidebarAlert
+                    icon={Icon}
+                    iconColor={alert.iconColor}
+                    title={alert.title}
+                    description={alert.description}
+                    time={alert.time}
+                    />
+                );
+              })}
             </div>
           </div>
 
