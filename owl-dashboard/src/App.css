@@ -1,15 +1,6 @@
 .App {
   height: 100vh;
   width: 100vw;
-/* background-color: #f5f5f5;   */
-}
-
-
-.bottom-row {
-  display: flex;
-  flex-direction: row;
-  height: 60%;
-  gap: 20px;
 }
 
 .allocation-card {
@@ -66,8 +57,38 @@
   font-weight: 700;
   color: #111827;
 }
+
 .allocation-item-container {
   margin-bottom: 25px;
+}
+
+.benchmark-legend-block {
+  height: 5px;
+  width: 15px;
+  background-color: #94a3b8;
+}
+
+.bottom-row {
+  display: flex;
+  flex-direction: row;
+  height: 60%;
+  gap: 20px;
+}
+
+.chart-axis-label,
+.chart-month-label {
+  fill: #6b7280;
+  font-size: 8px;
+}
+
+.chart-grid-line {
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+
+.chart-month-line {
+  stroke: #eef2ff;
+  stroke-width: 1;
 }
 
 .dashboard-content {
@@ -92,7 +113,6 @@
 
 .header-text {
   font-size: 20px;
-  /* margin-top: 24px; */
   color: #7f7f7f;
   font-weight: 400;
 }
@@ -202,12 +222,6 @@
   background-color: #7c3aed;
 }
 
-.benchmark-legend-block {
-  height: 5px;
-  width: 15px;
-  background-color: #94a3b8;
-}
-
 .performance-chart-card {
   margin-top: 14px;
 }
@@ -218,21 +232,6 @@
   overflow: visible;
 }
 
-.chart-grid-line {
-  stroke: #e5e7eb;
-  stroke-width: 1;
-}
-
-.chart-month-line {
-  stroke: #eef2ff;
-  stroke-width: 1;
-}
-
-.chart-axis-label,
-.chart-month-label {
-  fill: #6b7280;
-  font-size: 8px;
-}
 
 .portfolio-line {
   fill: none;

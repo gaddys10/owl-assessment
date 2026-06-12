@@ -20,7 +20,6 @@ function App() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 
   useEffect(() => {
@@ -124,13 +123,7 @@ function App() {
             <p className="header-text">Fund Intelligence</p>
           </div>  
           <div className="right-header">
-            <button
-              type="button"
-              className="notification-button"
-              aria-label={isSidebarOpen ? 'Close alerts sidebar' : 'Open alerts sidebar'}
-              aria-expanded={isSidebarOpen}
-              onClick={() => setIsSidebarOpen((prev) => !prev)}
-            >
+            <button className="notification-button">
               <Bell size={20} color="#7f7f7f" />
               <span className="notification-dot"></span>
             </button>
@@ -240,7 +233,7 @@ function App() {
             </div>
           </div>
 
-          <div className={`sidebar ${isSidebarOpen ? 'open' : 'collapsed'}`}>
+          <div className="sidebar">
             <div className="sidebar-title-box">
               <p className="sidebar-title">Alerts</p>
               <button type="button" className="sidebar-title-link">
